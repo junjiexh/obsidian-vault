@@ -1,7 +1,8 @@
+
 # 提前写日志
 
 每次操作，比如commit，都会写入一个log
-### undo 和 redo log
+## undo 和 redo log
 分为undo log和redo log
 
 `undo log`解决的是原子性的问题，即如果不想写入的被写入了，我们想撤回这些写入。（写入指写入磁盘）
@@ -23,8 +24,16 @@
 例如（FORCE时）
 ![[Pasted image 20250610173538.png]]
 - 特别注意：我们必须保证FLUSH发生在写入undo log之后，不然在flush-写undo之间如果crash，我们无法恢复
-- 特别注意：还必须保证FLUSH发生在COMMIT之前（FORCE的语义），不然我们无法判断
+- 特别注意：需要从最早的没提交的txn开始恢复，慢。（被**检查点**修复）
 
 **redo log(No Steal/No Force)**
 
 相比与undo log，记录的是更新后的值。写入时点是一致的。
+
+- 注意：需要恢复所有的txn，慢（被**检查点**修复）
+
+
+
+# 参考
+
+https://drive.google.com/file/d/1-WI7vB5Dw4vNOsICsJQr4WWVwstRdbLm/view?usp=sharing
